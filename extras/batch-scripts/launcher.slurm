@@ -3,29 +3,33 @@
 # Simple SLURM script for submitting multiple serial
 # jobs (e.g. parametric studies) using a script wrapper
 # to launch the jobs.
-#
-# To use, build the launcher executable and your
-# serial application(s) and place them in your WORKDIR
-# directory.  Then, edit the CONTROL_FILE to specify 
-# each executable per process.
 #-------------------------------------------------------
 #-------------------------------------------------------
-# 
-#         <------ Setup Parameters ------>
+#SBATCH -J JOBNAME                     # Replace JOBNAME
+#SBATCH -N 1                           # Number of nodes
+#SBATCH -p normal                      # Queue
+#SBATCH -o JOBNAME-%j.out              # Replace JOBNAME
+#SBATCH -t 01:00:00                    # Wallclock time
 #
-#SBATCH -J Parametric 
-#SBATCH -n 16
-#SBATCH -p development
-#SBATCH -o Parametric.o%j
-#SBATCH -t 00:05:00
-#          <------ Account String ----->
-# <--- (Use this ONLY if you have MULTIPLE accounts) --->
-##SBATCH -A
+# Alternatively, set number of tasks or tasks per node
+# Please, recall to enable one of them (no space before SBATCH)
+# SBATCH --ntasks-per-node=16
+# SBATCH -n 16
+#
+# Do not forget to set e-mail notifications
+# SBATCH --mail-type=ALL   # Opts: NONE, BEGIN, END, FAIL, REQUEUE, ALL
+# SBATCH --mail-user=<USER>@stanford.edu # Replace <user> with your address
+#------------------------------------------------------
+# Load launcher and set environment variables (do not touch)
+module load launcher/3.0.1
 #------------------------------------------------------
 
-export LAUNCHER_PLUGIN_DIR=$LAUNCHER_DIR/plugins
-export LAUNCHER_RMI=SLURM
-export LAUNCHER_JOB_FILE=jobfile
- 
-$LAUNCHER_DIR/paramrun
+# Add your modules to load below
 
+# Your job specification
+export LAUNCHER_JOB_FILE=tasks_list.sh  # Replace with your tasks file
+export LAUNCHER_WORKDIR=$(pwd)          # Modify when necessary
+
+
+# Run parametric run (do not touch)
+$LAUNCHER_DIR/paramrun
