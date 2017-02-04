@@ -21,7 +21,7 @@
 # SBATCH --mail-user=<USER>@stanford.edu # Replace <user> with your address
 #------------------------------------------------------
 # Load launcher and set environment variables (do not touch)
-module load launcher/3.0.1
+module load launcher/3.1.0
 #------------------------------------------------------
 
 # Add your modules to load below
